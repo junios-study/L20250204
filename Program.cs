@@ -8,6 +8,13 @@ namespace L20250204
     {
         static void Initialize(int[] deck)
         {
+            unsafe
+            {
+                TypedReference tr1 = __makeref(deck);
+                IntPtr ptr1 = **(IntPtr**)(&tr1);
+                Console.WriteLine(ptr1);
+            }
+
             for (int i = 0; i < deck.Length; i++)
             {
                 deck[i] = i + 1;
@@ -38,11 +45,65 @@ namespace L20250204
             Spade = 3,
         }
 
-        static void Print(int[] deck)
+        static int GetScore(int cardNumber)
         {
-            for (int i = 0; i < 8; ++i)
+            int value = (((cardNumber - 1) % 13) + 1);
+            return value > 10 ? 10 : value;
+        }
+
+        static void PrintCardList(int[] deck)
+        {
+            //Computer
+            Console.WriteLine("Computer");
+            for (int i = 0; i < 3; ++i)
             {
                 Console.WriteLine($"{CheckCardType(deck[i]).ToString()} {CheckCardName(deck[i])}");
+            }
+            Console.WriteLine("-------------");
+
+            Console.WriteLine("Player");
+            for (int i = 3; i < 6; ++i)
+            {
+                Console.WriteLine($"{CheckCardType(deck[i]).ToString()} {CheckCardName(deck[i])}");
+            }
+            Console.WriteLine("-------------");
+        }
+
+        static void Print(int[] deck)
+        {
+            PrintCardList(deck);
+
+            int computerScore = GetScore(deck[0]) +
+                GetScore(deck[1]) + GetScore(deck[2]);
+            int playerScore = GetScore(deck[3]) + GetScore(deck[4])
+                + GetScore(deck[5]);
+
+            Console.WriteLine($"Computer score : {computerScore}, Player Score : {playerScore}");
+
+            if (playerScore >= 21 && computerScore < 21)
+            {
+                //Computer Win
+                Console.WriteLine("Computer Win");
+            }
+            else if (playerScore < 21 && computerScore >= 21)
+            {
+                //Player Win
+                Console.WriteLine("Player Win");
+            }
+            else if (playerScore >= 21 && computerScore >= 21)
+            {
+                //Player Win
+                Console.WriteLine("Player Win");
+            }
+            else if (computerScore <= playerScore)
+            {
+                //Player Win
+                Console.WriteLine("Player Win");
+            }
+            else // (computerScore > playerScore)
+            {
+                //Computer Win
+                Console.WriteLine("Computer Win");
             }
         }
 
@@ -75,6 +136,8 @@ namespace L20250204
 
         static string CheckCardName(int cardNumber)
         {
+
+            //1 - 13
             int cardValue = ((cardNumber - 1) % 13) + 1;
             string cardName;
             switch (cardValue)
@@ -98,9 +161,6 @@ namespace L20250204
 
             return cardName;
         }
-
-
-
 
         static void Main(string[] args)
         {
