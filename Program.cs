@@ -1,37 +1,21 @@
 ﻿using System;
+using System.Data;
 using System.Security.Cryptography;
 
 namespace L20250204
 {
     internal class Program
     {
-        static uint A = 1103515245;
-        static uint C = 12345;
-        static uint M = 2147483648;
-
-        static uint seed = 1;
-
-        static uint rand()
+        static void Initialize(int[] deck)
         {
-            seed = (A * seed + C) % M;
-            return seed;
-        }
-
-        static void Main(string[] args)
-        {
-            int[] deck = new int[52];
-
-            //1 - 13 -> Heart , 1 -> A, 11 -> J, 12 -> Q , 13 -> K
-            //14 - 26 -> Diamond
-            //27 - 39 -> Clover
-            //40 - 52 -> Spade 
-            //Initialize
             for (int i = 0; i < deck.Length; i++)
             {
                 deck[i] = i + 1;
             }
+        }
 
-            //Shuffle 
+        static void Shuffle(int[] deck)
+        {
             Random random = new Random();
 
             for (int i = 0; i < deck.Length * 10; ++i)
@@ -43,12 +27,90 @@ namespace L20250204
                 deck[firstCardIndex] = deck[secondCardIndex];
                 deck[secondCardIndex] = temp;
             }
+        }
 
-            //Print
+        enum CardType
+        {
+            None = -1,
+            Heart = 0,
+            Diamond = 1,
+            Clover = 2,
+            Spade = 3,
+        }
+
+        static void Print(int[] deck)
+        {
             for (int i = 0; i < 8; ++i)
             {
-                Console.WriteLine(deck[i]);
+                Console.WriteLine($"{CheckCardType(deck[i]).ToString()} {CheckCardName(deck[i])}");
             }
+        }
+
+        static CardType CheckCardType(int cardNumber)
+        {
+            int valueType = (cardNumber - 1) / 13;
+
+            //CardType returnCardType = (CardType)valueType;
+            //switch((CardType)valueType)
+            //{
+            //    case CardType.Heart:
+            //        returnCardType = CardType.Heart;
+            //        break;
+            //    case CardType.Diamond:
+            //        returnCardType = CardType.Diamond;
+            //        break;
+            //    case CardType.Spade:
+            //        returnCardType = CardType.Spade;
+            //        break;
+            //    case CardType.Clover:
+            //        returnCardType = CardType.Clover;
+            //        break;
+            //    default:
+            //        returnCardType = CardType.None;
+            //        break;
+            //}
+
+            return (CardType)valueType;
+        }
+
+        static string CheckCardName(int cardNumber)
+        {
+            int cardValue = ((cardNumber - 1) % 13) + 1;
+            string cardName;
+            switch (cardValue)
+            {
+                case 1:
+                    cardName = "A";
+                    break;
+                case 11:
+                    cardName = "J";
+                    break;
+                case 12:
+                    cardName = "Q";
+                    break;
+                case 13:
+                    cardName = "K";
+                    break;
+                default:
+                    cardName = cardValue.ToString();
+                    break;
+            }
+
+            return cardName;
+        }
+
+
+
+
+        static void Main(string[] args)
+        {
+            int[] deck = new int[52];
+
+            Initialize(deck);
+
+            Shuffle(deck);
+
+            Print(deck);
         }
     }
 }
