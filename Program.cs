@@ -6,15 +6,8 @@ namespace L20250204
 {
     internal class Program
     {
-        static void Initialize(int[] deck)
+        static void Initialize(ref int[] deck)
         {
-            unsafe
-            {
-                TypedReference tr1 = __makeref(deck);
-                IntPtr ptr1 = **(IntPtr**)(&tr1);
-                Console.WriteLine(ptr1);
-            }
-
             for (int i = 0; i < deck.Length; i++)
             {
                 deck[i] = i + 1;
@@ -162,15 +155,51 @@ namespace L20250204
             return cardName;
         }
 
+        static void Test(ref int A)
+        {
+            A = 2;
+        }
+
+        class Texture2D
+        {
+            public byte[] Image = new byte[1000000];
+
+        }
+        static void MakePoint(ref Texture2D T)
+        {
+            unsafe
+            {
+                TypedReference tr1 = __makeref(T);
+                IntPtr ptr1 = **(IntPtr**)(&tr1);
+                Console.WriteLine(ptr1);
+            }
+        }
+        
         static void Main(string[] args)
         {
             int[] deck = new int[52];
 
-            Initialize(deck);
+            Texture2D T = new Texture2D();
 
-            Shuffle(deck);
+            unsafe
+            {
+                TypedReference tr1 = __makeref(T);
+                IntPtr ptr1 = **(IntPtr**)(&tr1);
+                Console.WriteLine(ptr1);
+            }
 
-            Print(deck);
+            MakePoint(ref T);
+
+            int A = 3;
+            Test(ref A);
+
+            Console.WriteLine(A);
+
+            //Initialize(ref deck);
+
+            //Shuffle(deck);
+
+            //Print(deck);
         }
     }
 }
